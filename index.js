@@ -280,7 +280,43 @@ async function run() {
      * 3. for every item in the menu collection that you found from a payment entry (document)
     */
 
-    
+    // using aggregate pipeline
+    app.get('/order-stats', verifyToken, verifyAdmin, async(req, res) =>{
+      const result = await paymentCollection.aggregate([
+        {
+          $unwind: '$menuItemIds'
+        },
+        {
+          $lookup: {
+            from: 'menu',
+            localField: 'menuItemIds',
+            foreignField: '_id',
+            as: 'menuItems'
+          }
+        },
+        {
+          $unwind: '$menuItems'
+        },
+        {
+          $group: {
+            _id: '$menuItems.category',
+            quantity:{ $sum: 1 },
+            revenue: { $sum: '$menuItems.price'} 
+          }
+        },
+        {
+          $project: {
+            _id: 0,
+            category: '$_id',
+            quantity: '$quantity',
+            revenue: '$revenue'
+          }
+        }
+      ]).toArray();
+
+      res.send(result);
+
+    })
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
