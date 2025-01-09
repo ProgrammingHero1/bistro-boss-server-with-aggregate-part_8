@@ -1,4 +1,4 @@
-## What We Did Today
+## What We Did Today.
 
 - **Different Dashboard Home Page for User and Admin**: Implemented distinct home pages for users and administrators to provide customized experiences based on roles.
 - **Fix Login Issue and API Race Condition**: Resolved issues related to user login and addressed race conditions in API requests to ensure smooth and reliable operations.
